@@ -3,6 +3,7 @@ import './App.css';
 import { CreditRole, Credits, Title } from './types';
 import { faker } from '@faker-js/faker';
 
+faker.seed(1);
 const generateTitle = (correct = true) => {
     let releaseYear = faker.date
         .between({ from: '1900', to: '' + new Date().getFullYear() })
@@ -58,7 +59,8 @@ const generateTitle = (correct = true) => {
     }
 
     const title = {
-        id: faker.number.int(),
+        isCorrect: correct,
+        id: faker.number.int(1000000),
         title: faker.music.songName(), //faker.company.catchPhrase(), // faker.word.sample(),
         description: faker.commerce.productDescription(),
         release_year: releaseYear,
@@ -94,7 +96,7 @@ const generateTitle = (correct = true) => {
 
 const generateCredits = (titleId: number, roleName?: CreditRole) => {
     const credits: Credits = {
-        id: faker.number.int(),
+        id: faker.number.int(1000000),
         title_id: titleId,
         role:
             roleName ||
@@ -152,9 +154,14 @@ function App() {
     return (
         <div className='App'>
             <header className='App-header'>
+                <a className='App-link' id='top' href='#titles'>
+                    Titles
+                </a>{' '}
+                <a className='App-link' href='#credits'>
+                    Credits
+                </a>
                 <button onClick={handleGeenrateClick}>Generate</button>
-
-                <h3>Titles</h3>
+                <h3 id='titles'>Titles {titlesDataSet.length}</h3>
                 {titlesDataSet.length > 0 && (
                     <table>
                         <thead>
@@ -184,13 +191,45 @@ function App() {
                                     <td>{entry.genres.join(', ')}</td>
                                     <td>{entry.production_country}</td>
                                     <td>{entry.seasons ?? 0}</td>
-                                    <td>{entry.isCorrect ?? 'false'}</td>
+                                    <td>
+                                        {entry.isCorrect?.toString() ?? 'false'}
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 )}
-                <h3>Credits</h3>
+                <h3 id='credits'>Credits {creditsDataSet.length}</h3>
+                <a className='App-link' href='#top'>
+                    Got to top
+                </a>
+                {creditsDataSet.length > 0 && (
+                    <>
+                        <table>
+                            <thead>
+                                <th>id</th>
+                                <th>title_id</th>
+                                <th>character_name</th>
+                                <th>real_name</th>
+                                <th>role</th>
+                            </thead>
+                            <tbody>
+                                {creditsDataSet.map((entry: Credits) => (
+                                    <tr>
+                                        <td>{entry.id}</td>
+                                        <td>{entry.title_id}</td>
+                                        <td>{entry.character_name}</td>
+                                        <td>{entry.real_name}</td>
+                                        <td>{entry.role}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <a className='App-link' href='#top'>
+                            Got to top
+                        </a>
+                    </>
+                )}
             </header>
         </div>
     );
